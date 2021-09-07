@@ -2,13 +2,13 @@
 
 This is an android based application through which users will be able to retrieve Contact Details, Call History details and transaction related messages. POC will retrive contact and logs information from the device by asking for different permissions.It will retrive the messages which are coming from an **ICICI** bank and have **credited** or **debited** keywords into the subject line. 
 
-## Technology/Framework used
+## Technology/Framework
  
 - MVC framework has been used to develop the application.
 - The application will work as per intended into device having the android version 5.0 and above. 
 - Application has been developed into JAVA language. 
 
-## Important functions to be used 
+## Important functions
   
 - ```app/src/main/java/com.poc``` is the main directory of the application. 
 - Fragments are placed under ```app/src/main/java/com.poc.fragment```
@@ -37,5 +37,3 @@ Install the APK file for the application from authorized source and give below m
 - **ACCESS_BACKGROUND_LOCATION** - This permission is used to get device location into higher versions. 
 - **FusedLocationProviderClient** - It is used to get current location of a device. 
 - **Geocoder** - It helps application to fetch address with the help of Latitude and Longitude. 
-
-## Screenshots
