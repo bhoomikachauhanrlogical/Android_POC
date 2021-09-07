@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SplashActivity">
+    tools:context=".activity.SplashActivity"
+    android:background="@color/white">
 
     <com.google.android.material.textview.MaterialTextView
         style="@style/TextAppearance.AppCompat.Large"
@@ -12,6 +13,7 @@
         android:gravity="center"
         android:text="POC"
         android:textSize="@dimen/_20sdp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

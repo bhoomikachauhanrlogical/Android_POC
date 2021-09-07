@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     tools:context=".activity.MainActivity">
 
     <LinearLayout
@@ -26,8 +27,10 @@
                 android:id="@+id/txtCurrentAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:padding="@dimen/_16dp"
                 android:text="current location"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_16sdp" />
         </com.google.android.material.card.MaterialCardView>
 
