@@ -10,16 +10,20 @@ This is an android based application through which users will be able to retriev
 
 ## Important functions to be used 
   
-  app/src/main/java/com.poc is the main directory of the application. 
-  app/src/main/java/com.poc.fragment
-**1. CallsFragment** - It is used to retrive data from **CallLog.Calls.CONTENT_URI** through the curser loader.
-**2. ContactsFragment** - It is used to retrive data from **ContactsContract.CommonDataKinds.Phone.CONTENT_URI** through the curser loader.
-**3. MessagesFragment** -  It is used to retrive messaging data from **Uri.parse("content://sms/")** through curser loader. Specific messages are retrived by using following keywords:
-      - ICICIB 
-      - Credited
-      - Debited 
-  **4. Pattern used to get transaction messages - ** [rR][sS]\.?\s[,\d]+\.?\d{0,2}|[iI][nN][rR]\.?\s*[,\d]+\.?\d{0,2} **
+  - ```app/src/main/java/com.poc``` is the main directory of the application. 
+  - Fragments are placed under ```app/src/main/java/com.poc.fragment```
+  
+**1. CallsFragment** - It is used to retrive data from ```CallLog.Calls.CONTENT_URI``` through the curser loader.
 
+**2. ContactsFragment** - It is used to retrive data from ```ContactsContract.CommonDataKinds.Phone.CONTENT_URI``` through the curser loader.
+
+**3. MessagesFragment** -  It is used to retrive messaging data from ```Uri.parse("content://sms/")``` through curser loader. Specific messages are retrived by using following keywords:
+- ICICIB 
+- Credited
+- Debited 
+
+**4. Fetch Amount** - To get specific amount form the message body, ```[rR][sS]\.?\s[,\d]+\.?\d{0,2}|[iI][nN][rR]\.?\s*[,\d]+\.?\d{0,2}``` pattern is used. 
+      
 ## Installation
 
 Install the APK file for the application from authorized source and give below mentioned permissions to access all the application related functionality. 
