@@ -34,7 +34,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.VHolder>
 
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.VHolder holder, int position) {
-        Sms sms = this.smsList.get(position);
+        Sms sms = smsList.get(position);
         holder.binding.txtName.setText(sms.getStatus());
         holder.binding.txtNumber.setText(sms.getAmount());
     }

@@ -34,7 +34,7 @@ public class ContactDetailsAdapter extends RecyclerView.Adapter<ContactDetailsAd
 
     @Override
     public void onBindViewHolder(@NonNull ContactDetailsAdapter.VHolder holder, int position) {
-        ContactDetail contactDetail = this.contactDetailList.get(position);
+        ContactDetail contactDetail = contactDetailList.get(position);
         holder.binding.txtNumber.setText(contactDetail.getNumber());
         holder.binding.txtName.setText(contactDetail.getName());
     }

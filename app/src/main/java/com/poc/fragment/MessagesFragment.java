@@ -77,7 +77,7 @@ public class MessagesFragment extends Fragment {
                     Matcher m = Pattern.compile("[rR][sS]\\.?\\s[,\\d]+\\.?\\d{0,2}|[iI][nN][rR]\\.?\\s*[,\\d]+\\.?\\d{0,2}").matcher(body);
                     if (m.find()) {
                         objSms.setAmount(m.group(0));
-                        this.smsList.add(objSms);
+                        smsList.add(objSms);
                     }
                 }
             }

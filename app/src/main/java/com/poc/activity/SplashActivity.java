@@ -22,11 +22,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.poc.R;
 import com.poc.utils.CommonUtils;
@@ -37,7 +39,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final int REQUEST_LOCATION = 199;
     private Activity activity;
-    private GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +47,10 @@ public class SplashActivity extends AppCompatActivity {
         activity = this;
         getSupportActionBar().hide();
 
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (Build.VERSION.SDK_INT >= 23) {
-                    checkPermission();
-                }
+        new Handler().postDelayed(() -> {
+
+            if (Build.VERSION.SDK_INT >= 23) {
+                checkPermission();
             }
         }, 200);
     }
@@ -92,11 +92,13 @@ public class SplashActivity extends AppCompatActivity {
                     Manifest.permission.READ_SMS,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
-        } else if (!CommonUtils.isLocationEnabled(this.activity)) {
-            turnOnGpsLocation();
         } else {
-            startActivity(new Intent(this.activity, MainActivity.class));
-            finish();
+            if (!CommonUtils.isLocationEnabled(activity)) {
+                turnOnGpsLocation();
+            } else {
+                startActivity(new Intent(activity, MainActivity.class));
+                finish();
+            }
         }
     }
 
@@ -105,22 +107,17 @@ public class SplashActivity extends AppCompatActivity {
         setFinishOnTouchOutside(true);
         LocationManager manager = (LocationManager) getSystemService("location");
         if (manager.isProviderEnabled("gps") && hasGPSDevice(this)) {
-            Toast.makeText(this, "Gps already enabled", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this.activity, MainActivity.class));
+            startActivity(new Intent(activity, MainActivity.class));
             finish();
         }
         if (!hasGPSDevice(this)) {
-            Toast.makeText(this, "Gps not Supported", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, activity.getResources().getString(R.string.gps_not_support), Toast.LENGTH_LONG).show();
         }
         if (manager.isProviderEnabled("gps") || !hasGPSDevice(this)) {
-            Log.e("TAG", "Gps already enabled");
-            Toast.makeText(this, "Gps already enabled", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this.activity, MainActivity.class));
+            startActivity(new Intent(activity, MainActivity.class));
             finish();
             return;
         }
-        Log.e("TAG", "Gps already enabled");
-        Toast.makeText(this, "Gps not enabled", Toast.LENGTH_LONG).show();
         enableLoc();
     }
 
@@ -138,52 +135,46 @@ public class SplashActivity extends AppCompatActivity {
 
     //todo show dialog to enable GPS
     private void enableLoc() {
-        if (this.googleApiClient == null) {
-            GoogleApiClient build = new GoogleApiClient.Builder(this).addApi(LocationServices.API).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                public void onConnected(Bundle bundle) {
-                }
 
-                public void onConnectionSuspended(int i) {
-                    SplashActivity.this.googleApiClient.connect();
-                }
-            }).addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                public void onConnectionFailed(ConnectionResult connectionResult) {
-                    Log.d("Location error", "Location error " + connectionResult.getErrorCode());
-                }
-            }).build();
-            this.googleApiClient = build;
-            build.connect();
-        }
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(100);
-        locationRequest.setInterval(30000);
-        locationRequest.setFastestInterval(5000);
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true);
-        LocationServices.SettingsApi.checkLocationSettings(this.googleApiClient, builder.build()).setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            public void onResult(LocationSettingsResult result) {
-                Status status = result.getStatus();
-                switch (status.getStatusCode()) {
-                    case 6:
+        LocationRequest locationRequest = LocationRequest.create()
+                .setInterval(1000)
+                .setFastestInterval(1000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        LocationServices
+                .getSettingsClient(this)
+                .checkLocationSettings(builder.build())
+                .addOnSuccessListener(this, (LocationSettingsResponse response) -> {
+                    // startUpdatingLocation(...);
+                })
+                .addOnFailureListener(this, ex -> {
+                    if (ex instanceof ResolvableApiException) {
+                        // Location settings are NOT satisfied,  but this can be fixed  by showing the user a dialog.
                         try {
-                            status.startResolutionForResult(SplashActivity.this, SplashActivity.REQUEST_LOCATION);
-                            return;
-                        } catch (IntentSender.SendIntentException e) {
-                            return;
+                            // Show the dialog by calling startResolutionForResult(),  and check the result in onActivityResult().
+                            ResolvableApiException resolvable = (ResolvableApiException) ex;
+                            resolvable.startResolutionForResult(activity, REQUEST_LOCATION);
+                        } catch (IntentSender.SendIntentException sendEx) {
+                            // Ignore the error.
                         }
-                    default:
-                        return;
-                }
-            }
-        });
+                    }
+                });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOCATION) {
+            if (resultCode == 0) {
+                Toast.makeText(this, activity.getResources().getString(R.string.enable_gps), Toast.LENGTH_LONG).show();
+            } else {
+            }
             startActivity(new Intent(activity, MainActivity.class));
             finish();
+
         }
     }
 
@@ -197,16 +188,16 @@ public class SplashActivity extends AppCompatActivity {
                         grantResults[2] +
                         grantResults[3] +
                         grantResults[4] != 0) {
-                    Toast.makeText(this.activity, "Permissions denied.", Toast.LENGTH_LONG).show();
-                    return;
-                } else if (!CommonUtils.isLocationEnabled(this.activity)) {
-                    turnOnGpsLocation();
-                    return;
+                    Toast.makeText(activity, activity.getResources().getString(R.string.permission_denied), Toast.LENGTH_LONG).show();
                 } else {
-                    startActivity(new Intent(this.activity, MainActivity.class));
-                    finish();
-                    return;
+                    if (!CommonUtils.isLocationEnabled(activity))
+                        turnOnGpsLocation();
+                    else {
+                        startActivity(new Intent(activity, MainActivity.class));
+                        finish();
+                    }
                 }
+                return;
             default:
                 return;
         }

@@ -1,5 +1,7 @@
 package com.poc.adapter;
 
+import static com.poc.utils.CommonUtils.getTimeFormatFromSeconds;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -38,13 +40,12 @@ public class CallHistoryAdapter extends RecyclerView.Adapter<CallHistoryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull CallHistoryAdapter.VHolder holder, int position) {
-        CallDetails callDetails = this.callDetailsList.get(position);
+        CallDetails callDetails = callDetailsList.get(position);
         holder.binding.txtContactName.setText(!TextUtils.isEmpty(callDetails.getName()) ? callDetails.getName() : "Unknown Number");
         holder.binding.txtNumber.setText(callDetails.getPhoneNumber());
         holder.binding.txtType.setText(callDetails.getCallType());
         holder.binding.txtDayTime.setText(CommonUtils.getFormattedDate(callDetails.getCallDayTime()));
-        TextView textView = holder.binding.txtDuration;
-        textView.setText(callDetails.getCallDuration() + " Sec");
+        holder.binding.txtDuration.setText(getTimeFormatFromSeconds(callDetails.getCallDuration()));
     }
 
     @Override

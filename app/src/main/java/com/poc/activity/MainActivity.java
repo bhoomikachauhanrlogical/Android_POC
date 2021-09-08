@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF3700B3")));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF3700B3")));
 
         activity = this;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -84,16 +84,17 @@ public class MainActivity extends AppCompatActivity {
     //todo add tabs into viewpager
     private void addViewPagerTabs() {
 
-        this.binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Contacts"));
-        this.binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Calls"));
-        this.binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Messages"));
-        this.binding.tabLayout.setTabGravity(0);
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(getResources().getString(R.string.contacts)));
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(getResources().getString(R.string.call)));
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(getResources().getString(R.string.messages)));
+        binding.tabLayout.setTabGravity(0);
 
-        TabLayoutAdapter adapter=new TabLayoutAdapter(this,getSupportFragmentManager(),binding.tabLayout.getTabCount());
+        TabLayoutAdapter adapter = new TabLayoutAdapter(this, getSupportFragmentManager(), binding.tabLayout.getTabCount());
         binding.viewPager.setAdapter(adapter);
 
-        this.binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
-        this.binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
             public void onTabSelected(TabLayout.Tab tab) {
                 binding.viewPager.setCurrentItem(tab.getPosition());
             }
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (this.fusedLocationProviderClient != null) {
+        if (fusedLocationProviderClient != null) {
             getLocationDetails();
         }
     }
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
     //todo add properties for location request
     private void getLocationDetails() {
-        mLocationRequest = new LocationRequest();
+        mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(102);
