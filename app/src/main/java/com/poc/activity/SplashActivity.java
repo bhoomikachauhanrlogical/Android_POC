@@ -70,19 +70,15 @@ public class SplashActivity extends AppCompatActivity {
                     || ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage("Read Call Logs, Read Contacts and Read SMS permissions are required to do the task.");
-                builder.setTitle("Please grant those permissions");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ActivityCompat.requestPermissions(activity, new String[]{
-                                Manifest.permission.READ_CALL_LOG,
-                                Manifest.permission.READ_CONTACTS,
-                                Manifest.permission.READ_SMS,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
-                    }
-                });
-                builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
+                builder.setMessage(R.string.list_of_required_permissions);
+                builder.setTitle(R.string.grant_permissions);
+                builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> ActivityCompat.requestPermissions(activity, new String[]{
+                        Manifest.permission.READ_CALL_LOG,
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.READ_SMS,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, 123));
+                builder.setNeutralButton(R.string.cancel, (DialogInterface.OnClickListener) null);
                 builder.create().show();
                 return;
             }
@@ -105,7 +101,7 @@ public class SplashActivity extends AppCompatActivity {
     //todo check status(enable/disable) for GPS
     private void turnOnGpsLocation() {
         setFinishOnTouchOutside(true);
-        LocationManager manager = (LocationManager) getSystemService("location");
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (manager.isProviderEnabled("gps") && hasGPSDevice(this)) {
             startActivity(new Intent(activity, MainActivity.class));
             finish();
@@ -125,7 +121,7 @@ public class SplashActivity extends AppCompatActivity {
     //todo check whether device has GPS functionality
     private boolean hasGPSDevice(Context context) {
         List<String> providers;
-        LocationManager mgr = (LocationManager) context.getSystemService("location");
+        LocationManager mgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (mgr == null || (providers = mgr.getAllProviders()) == null) {
             return false;
         }

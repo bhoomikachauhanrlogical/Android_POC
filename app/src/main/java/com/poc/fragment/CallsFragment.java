@@ -77,7 +77,6 @@ public class CallsFragment extends Fragment {
                     dir = "MISSED";
                     break;
             }
-            CursorLoader cursorLoader2 = cursorLoader;
             CallDetails callDetails = new CallDetails();
             callDetails.setPhoneNumber(phNumber);
             callDetails.setCallType(dir);
@@ -86,7 +85,6 @@ public class CallsFragment extends Fragment {
             callDetails.setCallDuration(callDuration);
             callDetails.setName(contactName);
             callDetailsList.add(callDetails);
-            cursorLoader = cursorLoader2;
         }
         managedCursor.close();
         binding.recyclerCallsList.setAdapter(new CallHistoryAdapter(getContext(), callDetailsList));

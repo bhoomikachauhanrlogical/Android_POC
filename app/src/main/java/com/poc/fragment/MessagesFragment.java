@@ -64,8 +64,6 @@ public class MessagesFragment extends Fragment {
             if (!TextUtils.isEmpty(address) && address.contains("ICICIB") && !TextUtils.isEmpty(body) && !body.contains("EMI")) {
 
                 if (body.contains("debited") || body.contains("credited")) {
-                    String[] split = body.split(" ");
-                    Log.e("Test ", "Test");
 
                     if (body.contains("debited for") || body.contains("debited with")) {
                         objSms.setStatus("Debited (" + dateString + ")");

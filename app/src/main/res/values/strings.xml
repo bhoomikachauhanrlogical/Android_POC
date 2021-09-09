@@ -8,4 +8,8 @@
     <string name="contacts">Contacts</string>
     <string name="call">Calls</string>
     <string name="messages">Messages</string>
+    <string name="ok">OK</string>
+    <string name="grant_permissions">Please grant those permissions</string>
+    <string name="cancel">Cancel</string>
+    <string name="list_of_required_permissions">Read Call Logs, Read Contacts, Read SMS and Location permissions are required to do the task</string>
 </resources>
