@@ -17,6 +17,7 @@ import com.poc.R;
 import com.poc.adapter.MessageAdapter;
 import com.poc.databinding.FragmentMessagesBinding;
 import com.poc.model.Sms;
+import com.poc.utils.Constant;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,31 +53,42 @@ public class MessagesFragment extends Fragment {
 
     //todo get sms details
     private void getAllMessages() {
+
+        Pattern p = Pattern.compile(Constant.PATTERN_TO_EXTRACT_AMOUNT);
+        String amount = "";
+
         CursorLoader cursorLoader = new CursorLoader(getContext(), Uri.parse("content://sms/"), null, null, null, null);
         Cursor c = cursorLoader.loadInBackground();
 
         while (c.moveToNext()) {
+
             Sms objSms = new Sms();
             String address = c.getString(c.getColumnIndexOrThrow("address"));
             String body = c.getString(c.getColumnIndexOrThrow("body"));
-            String dateString = new SimpleDateFormat("dd/MM/yyyy").format(new Date(Long.parseLong(c.getString(c.getColumnIndexOrThrow("date")))));
+            String dateString = new SimpleDateFormat(Constant.DATE_SMS_DD_MM_YYYY).
+                    format(new Date(Long.parseLong(c.getString(c.getColumnIndexOrThrow("date")))));
 
-            if (!TextUtils.isEmpty(address) && address.contains("ICICIB") && !TextUtils.isEmpty(body) && !body.contains("EMI")) {
+            if (!TextUtils.isEmpty(address) && address.contains("ICICIB") &&
+                    !TextUtils.isEmpty(body) && !body.contains("EMI") &&
+                    !body.contains("OTP for txn") && !body.contains("declined") &&
+                    !body.contains("stmt for") && !body.contains("transaction limit")) {
 
-                if (body.contains("debited") || body.contains("credited")) {
+                //todo these pattern is used to get amount (INR/Rs) from transaction sms
+                Matcher m = p.matcher(body);
+                if (m.find()) {
+                    amount = m.group(0);
+                }
 
-                    if (body.contains("debited for") || body.contains("debited with")) {
-                        objSms.setStatus("Debited (" + dateString + ")");
-                    } else if (body.contains("credited with")) {
-                        objSms.setStatus("Credited (" + dateString + ")");
-                    }
+                if (body.contains("debited") || body.contains("deducted")) {
+                    objSms.setStatus("Debited on " + dateString);
+                    objSms.setAmount(amount);
+                    smsList.add(objSms);
 
-                    //todo these pattern is used to get amount (INR/Rs) from transaction sms
-                    Matcher m = Pattern.compile("[rR][sS]\\.?\\s[,\\d]+\\.?\\d{0,2}|[iI][nN][rR]\\.?\\s*[,\\d]+\\.?\\d{0,2}").matcher(body);
-                    if (m.find()) {
-                        objSms.setAmount(m.group(0));
-                        smsList.add(objSms);
-                    }
+                } else if (body.contains("credited") || body.contains("deposited")
+                        || body.contains("credit") || body.contains("received")) {
+                    objSms.setStatus("Credited on " + dateString);
+                    objSms.setAmount(amount);
+                    smsList.add(objSms);
                 }
             }
         }

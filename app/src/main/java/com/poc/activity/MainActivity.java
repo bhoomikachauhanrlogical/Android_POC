@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             Iterator<Location> it = locationResult.getLocations().iterator();
             while (it.hasNext()) {
                 Location location = it.next();
-                Log.e("MainActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 if (location == null) {
                     location = locationResult.getLastLocation();
                 }

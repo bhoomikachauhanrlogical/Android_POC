@@ -1,5 +1,7 @@
 package com.poc.utils;
 
+import static com.poc.utils.Constant.DATE_DD_MM_YYYY;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.LocationManager;
@@ -10,25 +12,30 @@ import java.util.Date;
 
 public class CommonUtils {
 
+
+    //todo check whether GPS location is enabled or not
     public static boolean isLocationEnabled(Context context) {
         return ((LocationManager) context.getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled("gps");
     }
 
+    //todo convert date in required format
     public static String getFormattedDate(String callDate) {
         Date date = null;
         String formattedDate = "";
 
         SimpleDateFormat formatter =
-                new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy");
+                new SimpleDateFormat(Constant.DATE_GMT);
         try {
             date = formatter.parse(callDate);
-            formattedDate = new SimpleDateFormat("MM-dd-yyyy").format(date);
+            formattedDate = new SimpleDateFormat(DATE_DD_MM_YYYY).format(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return formattedDate;
     }
 
+
+    //todo convert seconds into hours minutes seconds  format as per required
     public static String getTimeFormatFromSeconds(String totalSeconds) {
 
         int seconds = Integer.parseInt(totalSeconds);

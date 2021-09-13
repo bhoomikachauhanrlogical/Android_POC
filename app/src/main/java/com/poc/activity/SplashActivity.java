@@ -38,6 +38,7 @@ import java.util.List;
 public class SplashActivity extends AppCompatActivity {
 
     private static final int REQUEST_LOCATION = 199;
+    private static final int OTHER_PERMISSIONS = 123;
     private Activity activity;
 
     @Override
@@ -77,12 +78,12 @@ public class SplashActivity extends AppCompatActivity {
                         Manifest.permission.READ_CONTACTS,
                         Manifest.permission.READ_SMS,
                         Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION}, 123));
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, OTHER_PERMISSIONS));
                 builder.setNeutralButton(R.string.cancel, (DialogInterface.OnClickListener) null);
                 builder.create().show();
                 return;
             }
-            ActivityCompat.requestPermissions(this.activity, new String[]{
+            ActivityCompat.requestPermissions(activity, new String[]{
                     Manifest.permission.READ_CALL_LOG,
                     Manifest.permission.READ_CONTACTS,
                     Manifest.permission.READ_SMS,
@@ -102,14 +103,14 @@ public class SplashActivity extends AppCompatActivity {
     private void turnOnGpsLocation() {
         setFinishOnTouchOutside(true);
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (manager.isProviderEnabled("gps") && hasGPSDevice(this)) {
+        if (manager.isProviderEnabled("gps") && hasGPSDevice(activity)) {
             startActivity(new Intent(activity, MainActivity.class));
             finish();
         }
-        if (!hasGPSDevice(this)) {
-            Toast.makeText(this, activity.getResources().getString(R.string.gps_not_support), Toast.LENGTH_LONG).show();
+        if (!hasGPSDevice(activity)) {
+            Toast.makeText(activity, activity.getResources().getString(R.string.gps_not_support), Toast.LENGTH_LONG).show();
         }
-        if (manager.isProviderEnabled("gps") || !hasGPSDevice(this)) {
+        if (manager.isProviderEnabled("gps") || !hasGPSDevice(activity)) {
             startActivity(new Intent(activity, MainActivity.class));
             finish();
             return;
@@ -141,12 +142,12 @@ public class SplashActivity extends AppCompatActivity {
                 .addLocationRequest(locationRequest);
 
         LocationServices
-                .getSettingsClient(this)
+                .getSettingsClient(activity)
                 .checkLocationSettings(builder.build())
-                .addOnSuccessListener(this, (LocationSettingsResponse response) -> {
+                .addOnSuccessListener(activity, (LocationSettingsResponse response) -> {
                     // startUpdatingLocation(...);
                 })
-                .addOnFailureListener(this, ex -> {
+                .addOnFailureListener(activity, ex -> {
                     if (ex instanceof ResolvableApiException) {
                         // Location settings are NOT satisfied,  but this can be fixed  by showing the user a dialog.
                         try {
@@ -165,7 +166,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOCATION) {
             if (resultCode == 0) {
-                Toast.makeText(this, activity.getResources().getString(R.string.enable_gps), Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, activity.getResources().getString(R.string.enable_gps), Toast.LENGTH_LONG).show();
             } else {
             }
             startActivity(new Intent(activity, MainActivity.class));
@@ -178,7 +179,7 @@ public class SplashActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 123:
+            case OTHER_PERMISSIONS:
                 if (grantResults.length <= 0 || grantResults[0] +
                         grantResults[1] +
                         grantResults[2] +
